@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 import Navigation from './Calendar/Navigation.js';
@@ -675,7 +675,15 @@ const Calendar: React.ForwardRefExoticComponent<CalendarProps & React.RefAttribu
           ? toDate(defaultValue)
           : null,
     );
-    const [viewState, setViewState] = useState<View | undefined>(defaultView);
+    const [viewState, setViewState] = useState<View | undefined>(viewProps || defaultView);
+    const viewPropsRef = useRef<View | undefined>(viewProps);
+
+    useEffect(() => {
+      if (viewProps !== viewPropsRef.current) {
+        viewPropsRef.current = viewProps;
+        setViewState(viewProps);
+      }
+    }, [viewProps]);
 
     const activeStartDate =
       activeStartDateProps ||
@@ -716,7 +724,7 @@ const Calendar: React.ForwardRefExoticComponent<CalendarProps & React.RefAttribu
 
     const valueType = getValueType(maxDetail);
 
-    const view = getView(viewProps || viewState, minDetail, maxDetail);
+    const view = getView(viewState, minDetail, maxDetail);
 
     const views = getLimitedViews(minDetail, maxDetail);
 

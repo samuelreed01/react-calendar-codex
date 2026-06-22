@@ -247,6 +247,16 @@ describe('Calendar', () => {
       expect(centuryView).toBeInTheDocument();
     });
 
+    it('renders changed view when view prop changes', async () => {
+      const { container, rerender } = await render(<Calendar view="year" />);
+
+      await rerender(<Calendar view="decade" />);
+
+      const decadeView = container.querySelector('.react-calendar__decade-view');
+
+      expect(decadeView).toBeInTheDocument();
+    });
+
     it('renders maximum allowed view when given maxDetail', async () => {
       const { container } = await render(<Calendar maxDetail="year" />);
 
@@ -493,6 +503,12 @@ describe('Calendar', () => {
         value: null,
         view: 'year',
       });
+
+      const label = container.querySelector(
+        '.react-calendar__navigation__label',
+      ) as HTMLButtonElement;
+
+      expect(label).toHaveAccessibleName('2017');
     });
 
     it('calls onDrillUp on drill up properly when not given view prop', async () => {
@@ -572,6 +588,12 @@ describe('Calendar', () => {
         value: null,
         view: 'decade',
       });
+
+      const label = container.querySelector(
+        '.react-calendar__navigation__label',
+      ) as HTMLButtonElement;
+
+      expect(label).toHaveAccessibleName('2001 \u2013 2010');
     });
 
     it('calls onDrillDown on drill down when not given view prop', async () => {
